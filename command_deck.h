@@ -6,7 +6,10 @@
 #include <gui/modules/widget.h>
 #include <gui/view_dispatcher.h>
 
-#define COMMAND_DECK_VERSION "0.1.0"
+#include "command_deck_api.h"
+#include "command_deck_config.h"
+
+#define COMMAND_DECK_VERSION "0.2.0"
 
 typedef enum {
     CommandDeckViewMenu,
@@ -28,4 +31,5 @@ typedef struct {
     ViewDispatcher* view_dispatcher;
     Submenu* menu;
     Widget* status;
+    CommandDeckConfig config;
 } CommandDeckApp;

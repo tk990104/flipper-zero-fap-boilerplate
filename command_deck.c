@@ -35,7 +35,11 @@ static void command_deck_menu_callback(void* context, uint32_t index) {
 
     switch(index) {
     case CommandDeckMenuNetwork:
-        command_deck_status_add_lines(app, "Network", "Placeholder only", "No requests are sent");
+        command_deck_status_add_lines(
+            app,
+            "Network",
+            command_deck_config_transport_label(&app->config),
+            command_deck_config_mode_label(&app->config));
         break;
     case CommandDeckMenuComputer:
         command_deck_status_add_lines(app, "Computer", "Placeholder only", "No commands are run");
@@ -44,17 +48,24 @@ static void command_deck_menu_callback(void* context, uint32_t index) {
         command_deck_status_add_lines(app, "IR Remote", "Placeholder only", "No signals are sent");
         break;
     case CommandDeckMenuRaspberryPi:
-        command_deck_status_add_lines(app, "Raspberry Pi", "Placeholder only", "API not configured");
+        command_deck_status_add_lines(
+            app,
+            "Raspberry Pi",
+            command_deck_api_route(CommandDeckApiEndpointStatus)->path,
+            command_deck_api_result_label(
+                command_deck_api_check(&app->config, CommandDeckApiEndpointStatus)));
         break;
     case CommandDeckMenuUtilities:
-        command_deck_status_add_lines(app, "Utilities", "Placeholder only", "Nothing runs yet");
+        command_deck_status_add_lines(
+            app, "Utilities", "API contract: v1", "Safe routes: 2");
         break;
     case CommandDeckMenuCustomActions:
-        command_deck_status_add_lines(app, "Custom Actions", "No actions configured", "MVP safe mode");
+        command_deck_status_add_lines(
+            app, "Custom Actions", "Allow-list empty", "Execution disabled");
         break;
     case CommandDeckMenuSystemStatus:
         command_deck_status_add_lines(
-            app, "System Status", "Command Deck v" COMMAND_DECK_VERSION, "UI scaffold ready");
+            app, "System Status", "Command Deck v" COMMAND_DECK_VERSION, "Safe mock mode");
         break;
     default:
         command_deck_status_add_lines(app, "Command Deck", "Unknown selection", "Press Back");
@@ -69,6 +80,7 @@ static CommandDeckApp* command_deck_alloc(void) {
     app->view_dispatcher = view_dispatcher_alloc();
     app->menu = submenu_alloc();
     app->status = widget_alloc();
+    command_deck_config_set_defaults(&app->config);
 
     view_dispatcher_attach_to_gui(
         app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
