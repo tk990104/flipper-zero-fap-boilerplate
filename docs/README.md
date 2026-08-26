@@ -1,21 +1,5 @@
-## Boilerplate
+# Flipper Command Deck documentation
 
-Boilerplate for a Flipper Zero application, you can use this code as a starting point for developing your own app. 
-### Features
-- Start Screen
-- Menu
-- Button Menu
-- File Browser
-- Text Input
-- Number Input
-- Different Scenes / Views
-- Settings Page (On/Off for haptics, sound, led)
-- Handling of Button Inputs
-- Handling of Tick events
-- Handling of Enter/Exit events
-- Rendering to GUI
-- Haptic Feedback 
-- Sound Effects
-- LED Effects
-- Dolphin Deeds (make dolphin happy)
-- Storage (Saves settings)
+The project overview, MVP architecture, safety boundaries, reference repositories, and build instructions are maintained in the repository's main [`README.md`](../README.md).
+
+Release history is recorded in [`changelog.md`](changelog.md).
