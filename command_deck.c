@@ -48,8 +48,7 @@ static void command_deck_status_add_lines(
     const char* line_one,
     const char* line_two) {
     widget_reset(app->status);
-    widget_add_string_element(
-        app->status, 64, 14, AlignCenter, AlignCenter, FontPrimary, title);
+    widget_add_string_element(app->status, 64, 14, AlignCenter, AlignCenter, FontPrimary, title);
     widget_add_string_element(
         app->status, 64, 34, AlignCenter, AlignCenter, FontSecondary, line_one);
     widget_add_string_element(
@@ -72,12 +71,11 @@ static bool command_deck_host_validator(const char* text, FuriString* error, voi
     UNUSED(context);
 
     for(const char* character = text; *character != '\0'; ++character) {
-        const bool allowed =
-            ((*character >= 'a') && (*character <= 'z')) ||
-            ((*character >= 'A') && (*character <= 'Z')) ||
-            ((*character >= '0') && (*character <= '9')) || (*character == '.') ||
-            (*character == '-') || (*character == ':') || (*character == '[') ||
-            (*character == ']');
+        const bool allowed = ((*character >= 'a') && (*character <= 'z')) ||
+                             ((*character >= 'A') && (*character <= 'Z')) ||
+                             ((*character >= '0') && (*character <= '9')) || (*character == '.') ||
+                             (*character == '-') || (*character == ':') || (*character == '[') ||
+                             (*character == ']');
         if(!allowed) {
             furi_string_set_str(error, "Use a hostname or IP");
             return false;
@@ -112,10 +110,7 @@ static void command_deck_settings_enter_callback(void* context, uint32_t index) 
 
     switch(index) {
     case CommandDeckSettingHost:
-        memcpy(
-            app->host_edit,
-            app->config.companion_host,
-            strlen(app->config.companion_host) + 1);
+        memcpy(app->host_edit, app->config.companion_host, strlen(app->config.companion_host) + 1);
         text_input_reset(app->host_input);
         text_input_set_header_text(app->host_input, "Companion host or IP");
         text_input_set_minimum_length(app->host_input, 0);
@@ -154,20 +149,18 @@ static void command_deck_settings_enter_callback(void* context, uint32_t index) 
 static void command_deck_settings_populate(CommandDeckApp* app) {
     variable_item_list_reset(app->settings);
 
-    VariableItem* item = variable_item_list_add(
-        app->settings, "Mock mode", 2, command_deck_mock_mode_changed, app);
+    VariableItem* item =
+        variable_item_list_add(app->settings, "Mock mode", 2, command_deck_mock_mode_changed, app);
     const uint8_t mock_mode_index = app->config.mock_mode ? 1 : 0;
     variable_item_set_current_value_index(item, mock_mode_index);
     variable_item_set_current_value_text(item, command_deck_toggle_labels[mock_mode_index]);
 
     item = variable_item_list_add(app->settings, "Companion host", 1, NULL, app);
-    variable_item_set_current_value_text(
-        item, app->config.companion_host[0] ? "Set" : "Not set");
+    variable_item_set_current_value_text(item, app->config.companion_host[0] ? "Set" : "Not set");
 
     item = variable_item_list_add(app->settings, "Companion port", 1, NULL, app);
     if(app->config.companion_port) {
-        snprintf(
-            app->port_text, sizeof(app->port_text), "%u", app->config.companion_port);
+        snprintf(app->port_text, sizeof(app->port_text), "%u", app->config.companion_port);
         variable_item_set_current_value_text(item, app->port_text);
     } else {
         variable_item_set_current_value_text(item, "Not set");
@@ -206,8 +199,7 @@ static void command_deck_menu_callback(void* context, uint32_t index) {
                 command_deck_api_check(&app->config, CommandDeckApiEndpointStatus)));
         break;
     case CommandDeckMenuUtilities:
-        command_deck_status_add_lines(
-            app, "Utilities", "API contract: v1", "Safe routes: 2");
+        command_deck_status_add_lines(app, "Utilities", "API contract: v1", "Safe routes: 2");
         break;
     case CommandDeckMenuCustomActions:
         command_deck_status_add_lines(
@@ -242,8 +234,7 @@ static CommandDeckApp* command_deck_alloc(void) {
     command_deck_storage_load(&app->config);
     app->config.transport_enabled = false;
 
-    view_dispatcher_attach_to_gui(
-        app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
+    view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
 
     submenu_set_header(app->menu, "Flipper Command Deck");
     submenu_add_item(
@@ -257,17 +248,9 @@ static CommandDeckApp* command_deck_alloc(void) {
     submenu_add_item(
         app->menu, "Utilities", CommandDeckMenuUtilities, command_deck_menu_callback, app);
     submenu_add_item(
-        app->menu,
-        "Custom Actions",
-        CommandDeckMenuCustomActions,
-        command_deck_menu_callback,
-        app);
+        app->menu, "Custom Actions", CommandDeckMenuCustomActions, command_deck_menu_callback, app);
     submenu_add_item(
-        app->menu,
-        "System Status",
-        CommandDeckMenuSystemStatus,
-        command_deck_menu_callback,
-        app);
+        app->menu, "System Status", CommandDeckMenuSystemStatus, command_deck_menu_callback, app);
     submenu_add_item(
         app->menu, "Settings", CommandDeckMenuSettings, command_deck_menu_callback, app);
 
@@ -288,17 +271,11 @@ static CommandDeckApp* command_deck_alloc(void) {
     view_dispatcher_add_view(
         app->view_dispatcher, CommandDeckViewStatus, widget_get_view(app->status));
     view_dispatcher_add_view(
-        app->view_dispatcher,
-        CommandDeckViewSettings,
-        variable_item_list_get_view(app->settings));
+        app->view_dispatcher, CommandDeckViewSettings, variable_item_list_get_view(app->settings));
     view_dispatcher_add_view(
-        app->view_dispatcher,
-        CommandDeckViewHostInput,
-        text_input_get_view(app->host_input));
+        app->view_dispatcher, CommandDeckViewHostInput, text_input_get_view(app->host_input));
     view_dispatcher_add_view(
-        app->view_dispatcher,
-        CommandDeckViewPortInput,
-        number_input_get_view(app->port_input));
+        app->view_dispatcher, CommandDeckViewPortInput, number_input_get_view(app->port_input));
 
     return app;
 }

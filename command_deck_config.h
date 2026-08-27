@@ -3,7 +3,7 @@
 #include <furi.h>
 
 #define COMMAND_DECK_CONFIG_SCHEMA_VERSION 1U
-#define COMMAND_DECK_COMPANION_HOST_MAX 64U
+#define COMMAND_DECK_COMPANION_HOST_MAX    64U
 
 typedef struct {
     uint32_t schema_version;
