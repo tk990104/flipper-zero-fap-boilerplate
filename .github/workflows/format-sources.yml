@@ -23,10 +23,7 @@ jobs:
           sdk-channel: release
 
       - name: Format sources
-        uses: flipperdevices/flipperzero-ufbt-action@v0.1.3
-        with:
-          skip-setup: true
-          task: format
+        run: ufbt format
 
       - name: Show formatting patch
         run: git diff -- '*.c' '*.h'
