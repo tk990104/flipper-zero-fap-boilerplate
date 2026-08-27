@@ -1,6 +1,6 @@
 # Companion API contract
 
-This document defines the future boundary between Flipper Command Deck and a trusted companion service, such as one running on a Raspberry Pi. Version 0.2.0 implements this contract as local mock data only; it contains no HTTP client and sends no requests.
+This document defines the future boundary between Flipper Command Deck and a trusted companion service, such as one running on a Raspberry Pi. Version 0.3.0 implements this contract as local mock data only; it contains no HTTP client and sends no requests.
 
 ## Base path and media type
 
@@ -37,7 +37,7 @@ Returns only capabilities explicitly exposed by the companion. The MVP mock resp
 
 Future actions must use stable identifiers returned by the capabilities route and matched against a local allow-list. The contract must never accept shell commands, executable paths, scripts, or arbitrary URLs from the Flipper.
 
-An action transport is intentionally absent from version 0.2.0. Adding one requires:
+An action transport is intentionally absent from version 0.3.0. Adding one requires:
 
 1. explicit user configuration;
 2. authenticated requests;
@@ -53,3 +53,5 @@ An action transport is intentionally absent from version 0.2.0. Adding one requi
 - Companion host defaults to empty.
 - Companion port defaults to zero.
 - Enabling transport without a host and non-zero port is invalid.
+- The Settings UI cannot enable transport.
+- Loading saved settings always forces transport off.

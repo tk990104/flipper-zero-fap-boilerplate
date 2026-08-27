@@ -1,6 +1,6 @@
 # Flipper Command Deck
 
-Flipper Command Deck is a safe, menu-first Flipper Zero application scaffold. Version `0.2.0` adds a disabled-by-default configuration layer and a mock companion-API contract without transmitting IR, making network requests, or running remote commands.
+Flipper Command Deck is a safe, menu-first Flipper Zero application scaffold. Version `0.3.0` adds on-device settings, app-scoped persistence, and automated build checks while keeping transport disabled.
 
 ## MVP
 
@@ -13,8 +13,9 @@ The app opens directly to a top-level menu with seven sections:
 - Utilities
 - Custom Actions
 - System Status
+- Settings
 
-Each selection opens a read-only status screen. The placeholders deliberately perform no device, network, infrared, GPIO, or remote-computer action.
+The original seven sections remain read-only status screens. Settings can edit mock mode, companion host, and companion port. These values are stored on the SD card in the app-specific data folder; transport cannot be enabled from the UI.
 
 ## Architecture
 
@@ -22,10 +23,11 @@ The MVP has a deliberately small surface:
 
 1. `application.fam` declares the external application as `command_deck` and exposes the `command_deck_app` entry point.
 2. `command_deck.c` owns the Flipper GUI records, a `ViewDispatcher`, the top-level `Submenu`, and one reusable status `Widget`.
-3. `command_deck_config.c` owns validated runtime defaults. Mock mode is on, transport is off, and no host or port is configured.
-4. `command_deck_api.c` defines two read-only API routes and deterministic mock responses. It contains no transport implementation.
-5. `command_deck.h` contains the app state plus stable menu and view identifiers.
-6. Selecting a menu item only replaces the text in the reusable status widget. Pressing Back returns to the menu; pressing Back from the menu exits.
+3. `command_deck_config.c` owns validated runtime defaults. Mock mode is on and transport is off.
+4. `command_deck_storage.c` loads and saves mock mode, companion host, and companion port through `APP_DATA_PATH`. Loaded configuration always forces transport off.
+5. `command_deck_api.c` defines two read-only API routes and deterministic mock responses. It contains no transport implementation.
+6. `command_deck.h` contains the app state plus stable menu and view identifiers.
+7. The Settings view uses standard Flipper variable, text, and number input modules. Changes are saved immediately.
 
 Future integrations should sit behind explicit interfaces and configuration. Network and IR transports should remain separate from menu/navigation code, and custom actions should be allow-listed rather than accepting arbitrary commands.
 
@@ -57,9 +59,13 @@ The source also supports the standard uFBT workflow:
 ufbt
 ```
 
+## Automated checks
+
+The `.github/workflows/build.yml` workflow builds the FAP against the latest official release SDK, uploads the generated package, and runs the official uFBT lint task on pushes and pull requests.
+
 ## Safety scope
 
-This branch is intentionally non-operational. The API layer returns local mock state only. It does not include BadUSB payloads, Sub-GHz transmission, credential handling, arbitrary command execution, network requests, or IR transmission.
+This branch is intentionally non-operational. Settings do not expose the transport flag, and loading a saved configuration forces transport off. The API layer returns local mock state only. It does not include BadUSB payloads, Sub-GHz transmission, credential handling, arbitrary command execution, network requests, or IR transmission.
 
 ## Lineage
 
