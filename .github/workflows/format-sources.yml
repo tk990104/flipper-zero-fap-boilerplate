@@ -28,6 +28,9 @@ jobs:
           skip-setup: true
           task: format
 
+      - name: Show formatting patch
+        run: git diff -- '*.c' '*.h'
+
       - name: Upload formatted sources
         uses: actions/upload-artifact@v7
         with:
